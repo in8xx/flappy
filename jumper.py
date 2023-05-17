@@ -3,6 +3,7 @@
 # import libs
 import pygame as pg
 import os
+from os import path
 
 # import settings 
 from settings import *
@@ -16,13 +17,31 @@ import random
 from pygame import mixer
 
 '''
-Add different platforms
+Sources:
+Platform Class
+1) https://www.youtube.com/watch?v=Ail3rC_q_Os
+Gravity
+2) Mr. Cozort
+def update(self):
+    self.mob_collide()
+    self.acc = vec(0, PLAYER_GRAV)
+    self.acc.x = self.vel.x * PLAYER_FRICTION
+    self.input()
+    self.vel += self.acc
+    self.pos += self.vel + 0.5 * self.acc
+    self.rect.midbottom = self.pos
 '''
 
+'''
+Goals:
+1) Score
+2) Add more types of platforms
+3) Make game complete
+'''
 
 # set up assets folders
 game_folder = os.path.dirname(__file__)
-img_folder = os.path.join(game_folder, "img")
+img_folder = os.path.join(game_folder, "assets")
 
 pg.init()
 pg.mixer.init()
@@ -30,6 +49,8 @@ mixer.music.load("clg.mp3")
 mixer.music.play(-1)
 
 screen = pg.display.set_mode((700, 500))
+
+background = pg.image.load(path.join(img_folder, "steph.jpg")).convert()
 
 # defines the button perameters, boarder, font, size etc...
 def button(screen, position, text, size, colors="white on blue"):
@@ -129,7 +150,7 @@ class Game:
 
         for i in range(0,7):
             # calls the variable "m", the mob class
-            m = Mob(20,20,(RED))
+            m = Mob(18,18,(RED))
             self.all_sprites.add(m)
             self.enemies.add(m)
         self.run()
@@ -160,9 +181,12 @@ class Game:
 
     # draws background, sprites, and text
     def draw(self):
-        self.screen.fill(WHITE)
+        background = pg.image.load(path.join(img_folder, "steph.jpg")).convert()
+        self.background = pg.transform.scale(background, (WIDTH,HEIGHT))
+        self.screen.blit(self.background, (0, 0))
+        # self.screen.fill(WHITE)
         self.all_sprites.draw(self.screen)
-        self.draw_text(str(self.score), 20, BLACK, 15, 5)
+        self.draw_text(str(self.score), 20, WHITE, 15, 5)
         pg.display.flip()
 
     '''
@@ -181,7 +205,8 @@ class Game:
         self.screen.blit(text_surface, text_rect)   
 
     '''
-    
+    Mob Collision
+    Moves the Player in a certain direction
     '''
     
     # method that updates the results of player's position 
@@ -210,12 +235,11 @@ class Game:
                 self.player.pos.y += 10
 
         
-            
         # checks if player collides with a platform
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player, self.platforms, False)
             if hits: 
-                if hits[0].variant == "bouncey":
+                if hits[0].variant == "bouncy":
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = -PLAYER_JUMP
                 # elif hits[0].variant == "disappearing":
@@ -225,12 +249,8 @@ class Game:
                     self.player.vel.y = 0
 
         '''
-        Goal 3: Make more platforms as the player moves up
-        Requires many questions to be answered
-        1) How ill the platforms be created? (Randomized, Position, Size, etc.)
-        2) How will the game know to create more platforms?
-        3) How will the game end when the player doesn't land on the platforms?
-        etc...
+        Score:
+        Once the platform reaches the bottom it adds to the score
         '''
         # checks if player is at the top 4th of the screen to verify that the randomized platforms can be generated
         # The platforms move cohesively with the player's velocity
@@ -252,33 +272,26 @@ class Game:
                     play_again()
                     
 
-
         # if the sprite falls the platforms will hit the top of the screen and their height will equal zero stopping the game loop
         if len(self.platforms) == 0:
             self.playing = False
 
-        
         # loop for returning the platforms to the screen after it is verifyied the the player is at the top fourth of the screen
-
         while len(self.platforms) < 4:
             width = 50          
             height = 10
             if height < 1:
                 height = 1
-            p = Platform(randint(0, 700), randint(-2, -1), width, height, BABYBLUE, 'normal')
+            p = Platform(randint(0, 700), randint(-2, -1), width, height, BABYBLUE, "normal")
             self.platforms.add(p)
             self.all_sprites.add(p)
 
-
-
-        
-                            
+               
 # instantiates the game class
 g = Game()
 
 # starts game loop
 while g.running:
     menu()
-    g.new()
 
 pg.quit()
