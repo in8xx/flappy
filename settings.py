@@ -15,6 +15,8 @@ BLUE = (50,50,255)
 BABYBLUE = (137, 207, 240)
 SLIME = (50, 205, 50)
 RED = (255,50,50)
+GOLD = (255, 215, 0)
+PURPLE = (128, 0, 128)
 
 # defines a random color
 from random import randint
@@ -30,5 +32,5 @@ PAUSED = False
 PLATFORMS_LIST = [(0, HEIGHT - 40, WIDTH, 40, (200,200,200), "normal"),
                  (WIDTH / 2 - 50, HEIGHT * 3 / 4, 100, 20, (SLIME), "bouncy"),
                 #  (500, HEIGHT - 300, 100, 5, (200,200,200), "disappearing "),
-                 (350, 200, 100, 20, (BABYBLUE), "normal"),
-                 (175, 400, 100, 20, (BABYBLUE), "normal")]
+                 (350, 200, 100, 20, (PURPLE), "normal"),
+                 (175, 400, 100, 20, (PURPLE), "normal")]

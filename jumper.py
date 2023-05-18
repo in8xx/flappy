@@ -50,7 +50,7 @@ mixer.music.play(-1)
 
 screen = pg.display.set_mode((700, 500))
 
-background = pg.image.load(path.join(img_folder, "steph.jpg")).convert()
+background = pg.image.load(path.join(img_folder, "colors.jpg")).convert()
 
 # defines the button perameters, boarder, font, size etc...
 def button(screen, position, text, size, colors="white on blue"):
@@ -66,13 +66,15 @@ def button(screen, position, text, size, colors="white on blue"):
     pg.draw.rect(screen, bg, (x, y, w , h))
     return screen.blit(text_render, (x, y)) 
 
+# method for the menu screen
 def menu():
     pg.display.set_caption("menu")
     # creates what is displayed on the buttons
-    b0 = button(screen, (10, 10), "Do you wanna play Birdy?", 64, "white on black")
-    b1 = button(screen, (150, 300), "Na", 40, "red on blue")
-    b2 = button(screen, (450, 300), "Let's play", 40, "purple on green")
-    b6 = button(screen, (225, 600), "(red mobs hurt)", 40, "red on black")
+    b0 = button(screen, (10, 10), "Do you wanna play Birdy?", 64, "purple on black")
+    b1 = button(screen, (150, 600), "NA", 40, "purple on black")
+    b2 = button(screen, (450, 600), "PLAY", 40, "purple on white")
+    b6 = button(screen, (215, 200), "(white mobs hurt)", 40, "white on purple")
+    b7 = button(screen, (90, 100), "A: left || D: right || SPACE: jump", 40, "black on purple")
 
     # loop of the menu
     while True:
@@ -87,35 +89,11 @@ def menu():
                 if b1.collidepoint(pg.mouse.get_pos()):
                     pg.quit()
                 elif b2.collidepoint(pg.mouse.get_pos()):
+                    # calls the game class
                     g.new()
 
         
 
-        pg.display.update()
-    pg.quit()
-
-def play_again():
-    
-
-    while True:
-        
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                pg.quit()
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
-                    pg.quit()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                # quits pygame
-                if b3.collidepoint(pg.mouse.get_pos()):
-                    pg.quit()
-                elif b4.collidepoint(pg.mouse.get_pos()):
-                    g.new()
-
-        screen.fill(BLACK)
-        b3 = button(screen, (150, 300), "Na", 40, "red on blue")
-        b4 = button(screen, (450, 300), "Let's play", 40, "purple on green")
-        b5 = button(screen, (180, 10), "PLAY AGAIN?", 60, "white on black")
         pg.display.update()
     pg.quit()
 
@@ -150,10 +128,37 @@ class Game:
 
         for i in range(0,7):
             # calls the variable "m", the mob class
-            m = Mob(18,18,(RED))
+            m = Mob(18,18,(WHITE))
             self.all_sprites.add(m)
             self.enemies.add(m)
         self.run()
+        self.play_again()
+    
+    def play_again(self):
+        while True:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        pg.quit()
+                if event.type == pg.MOUSEBUTTONDOWN:
+                    # quits pygame
+                    if b3.collidepoint(pg.mouse.get_pos()):
+                        pg.quit()
+                    elif b4.collidepoint(pg.mouse.get_pos()):
+                        # calls the game class
+                        g.new()
+            
+            screen.fill(BLACK)
+            b3 = button(screen, (150, 600), "NA", 40, "purple on black")
+            b4 = button(screen, (450, 600), "PLAY", 40, "purple on white")
+            b5 = button(screen, (50, 10), "PLAY BIRDY AGAIN?", 60, "purple on black")
+            # Display the score
+            b8 = button(screen, (225, 100), f"Score: {self.score}", 60, "black on purple")
+            pg.display.update()
+        pg.quit()
+        
 
     # method that has the game loop
     def run(self):
@@ -181,19 +186,18 @@ class Game:
 
     # draws background, sprites, and text
     def draw(self):
-        background = pg.image.load(path.join(img_folder, "steph.jpg")).convert()
+        background = pg.image.load(path.join(img_folder, "colors.jpg")).convert()
         self.background = pg.transform.scale(background, (WIDTH,HEIGHT))
         self.screen.blit(self.background, (0, 0))
-        # self.screen.fill(WHITE)
         self.all_sprites.draw(self.screen)
-        self.draw_text(str(self.score), 20, WHITE, 15, 5)
+        self.draw_text(str(self.score), 50, WHITE, 335, 5)
         pg.display.flip()
 
     '''
-    GOAL 2: Score
+    Score
     Used the draw method in the base code
-    1) How will the score increase?
-    Line 208: When the platforms are greater than the height (off the bottom screen), score increases by 10
+    How will the score increase?
+    Line 267: When the platforms are greater than the height (off the bottom screen), score increases by 10
     '''
     # method for drawing the score on the top left
     def draw_text(self, text, size, color, x, y):
@@ -220,21 +224,20 @@ class Game:
         if mhits:
             # mob hits player on the left, then the moves 10 pixels to right
             if self.player.vel.x < 0:
-                self.player.pos.x += 10
+                self.player.pos.x += 5
             
             # mob hits player on the right, then  moves player 10 pixels to the left
             if self.player.vel.x > 0:
-                self.player.pos.x -= 10
+                self.player.pos.x -= 5
             # mob hits player from bottom, then moves player 10 pixels up
 
             if self.player.vel.y > 0:
-                self.player.pos.y -= 10
+                self.player.pos.y -= 5
 
             # mob hits player from the top, then moves player 10 pixels doen
             if self.player.vel.y < 0:
-                self.player.pos.y += 10
+                self.player.pos.y += 5
 
-        
         # checks if player collides with a platform
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player, self.platforms, False)
@@ -242,8 +245,7 @@ class Game:
                 if hits[0].variant == "bouncy":
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = -PLAYER_JUMP
-                # elif hits[0].variant == "disappearing":
-                #     hits[0].kill()
+            
                 else:
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = 0
@@ -269,8 +271,6 @@ class Game:
                 sprite.rect.y -= max(self.player.vel.y, 10)
                 if sprite.rect.bottom < 0:
                     sprite.kill()
-                    play_again()
-                    
 
         # if the sprite falls the platforms will hit the top of the screen and their height will equal zero stopping the game loop
         if len(self.platforms) == 0:
@@ -282,7 +282,7 @@ class Game:
             height = 10
             if height < 1:
                 height = 1
-            p = Platform(randint(0, 700), randint(-2, -1), width, height, BABYBLUE, "normal")
+            p = Platform(randint(0, 700), randint(-2, -1), width, height, PURPLE, "normal")
             self.platforms.add(p)
             self.all_sprites.add(p)
 
