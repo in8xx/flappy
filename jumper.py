@@ -20,6 +20,7 @@ from pygame import mixer
 Sources:
 Platform Class
 1) https://www.youtube.com/watch?v=Ail3rC_q_Os
+
 Gravity
 2) Mr. Cozort
 def update(self):
@@ -97,7 +98,6 @@ def menu():
         pg.display.update()
     pg.quit()
 
-
 # create game class in order to pass properties to the sprites file
 class Game:
     def __init__(self):
@@ -149,7 +149,7 @@ class Game:
                     elif b4.collidepoint(pg.mouse.get_pos()):
                         # calls the game class
                         g.new()
-            
+        
             screen.fill(BLACK)
             b3 = button(screen, (150, 600), "NA", 40, "purple on black")
             b4 = button(screen, (450, 600), "PLAY", 40, "purple on white")
