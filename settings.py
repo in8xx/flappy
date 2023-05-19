@@ -6,7 +6,7 @@ PLAYER_JUMP = 20
 PLAYER_GRAV = 0.8
 MOB_ACC = 2
 MOB_FRICTION = -0.3
-GAME_FONT = 'arial'
+GAME_FONT = 'inkfree'
 
 # define colors
 BLACK = (0,0,0)
