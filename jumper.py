@@ -54,7 +54,7 @@ screen = pg.display.set_mode((700, 500))
 background = pg.image.load(path.join(img_folder, "colors.jpg")).convert()
 
 # defines the button perameters, boarder, font, size etc...
-def button(screen, position, text, size, colors="white on blue"):
+def button(screen, position, text, size, colors):
     fg, bg = colors.split(" on ")
     font = pg.font.SysFont("inkfree", size)
     text_render = font.render(text, 1, fg)
